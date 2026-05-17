@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planilla Digital — Balonmano</title>
+<style>
+:root {
+  --azul: #0D3B66;
+  --verde: #00A896;
+  --gris: #333333;
+  --gris-claro: #F4F4F6;
+  --blanco: #ffffff;
+  --rule: #d0d4da;
+  --rojo: #c0392b;
+  --amarillo: #f39c12;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--gris-claro);
+  color: var(--gris);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  padding-bottom: 80px;
+}
+
+/* HEADER */
+.header {
+  background: var(--azul);
+  color: var(--blanco);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-bottom: 3px solid var(--verde);
+}
+
+.brand { font-size: 18px; font-weight: bold; letter-spacing: 1px; }
+.brand span { color: var(--verde); }
+.header-tag { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.6; }
+
+/* WRAP */
+.wrap { max-width: 1200px; margin: 0 auto; padding: 20px 16px; }
+
+/* SECCIÓN */
+.sec { background: var(--blanco); border: 1px solid var(--rule); border-radius: 6px; margin-bottom: 16px; overflow: hidden; }
+.sec-head { background: var(--azul); color: var(--blanco); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; }
+.sec-title { font-size: 12px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; }
+.sec-body { padding: 16px; }
+
+/* DATOS DEL PARTIDO */
+.datos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field label { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: var(--verde); font-weight: bold; }
+.field input, .field select {
+  border: 1.5px solid var(--rule);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  color: var(--gris);
+  background: var(--gris-claro);
+  outline: none;
+}
+.field input:focus, .field select:focus { border-color: var(--verde); }
+
+/* MARCADOR */
+.marcador-wrap { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
+
+.marcador-equipo { text-align: center; }
+.marcador-nombre { font-size: 11px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; color: var(--azul); margin-bottom: 6px; }
+
+.marcador-tiempos { display: flex; flex-direction: column; gap: 8px; }
+.tiempo-row { display: flex; align-items: center; gap: 10px; }
+.tiempo-label { font-size: 10px; color: var(--gris); opacity: 0.6; width: 90px; text-align: right; }
+.tiempo-val { display: flex; align-items: center; gap: 6px; }
+.marcador-input {
+  width: 60px;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  border: 2px solid var(--rule);
+  border-radius: 6px;
+  padding: 4px;
+  font-family: Arial, sans-serif;
+  color: var(--azul);
+  background: var(--gris-claro);
+  outline: none;
+}
+.marcador-input:focus { border-color: var(--verde); }
+.marcador-input.final { font-size: 36px; color: var(--azul); border-color: var(--azul); }
+
+.marcador-sep { font-size: 32px; font-weight: bold; color: var(--rule); margin-top: 16px; }
+
+/* TABLA JUGADORES */
+.tabla-jugadores { width: 100%; border-collapse: collapse; font-size: 12px; }
+.tabla-jugadores th {
+  background: var(--azul);
+  color: var(--blanco);
+  padding: 8px 6px;
+  text-align: center;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.tabla-jugadores th.left { text-align: left; padding-left: 10px; }
+
+.tabla-jugadores td {
+  padding: 5px 4px;
+  border-bottom: 1px solid var(--gris-claro);
+  text-align: center;
+  vertical-align: middle;
+}
+.tabla-jugadores tr:last-child td { border-bottom: none; }
+.tabla-jugadores tr:hover td { background: #f0fbfa; }
+
+.tabla-jugadores input[type="text"],
+.tabla-jugadores input[type="number"] {
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 4px 6px;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  color: var(--gris);
+  background: var(--blanco);
+  outline: none;
+  width: 100%;
+}
+
+.tabla-jugadores input[type="text"]:focus,
+.tabla-jugadores input[type="number"]:focus { border-color: var(--verde); }
+
+.col-num { width: 44px; }
+.col-nombre { min-width: 160px; }
+.col-goles { width: 50px; }
+.col-7m { width: 50px; }
+.col-amon { width: 60px; }
+.col-excl { width: 50px; }
+.col-desc { width: 60px; }
+
+/* CONTADORES +/- */
+.counter-wrap { display: flex; align-items: center; justify-content: center; gap: 4px; }
+.cnt-btn {
+  width: 22px; height: 22px;
+  border-radius: 4px;
+  border: 1px solid var(--rule);
+  background: var(--gris-claro);
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gris);
+  font-family: Arial, sans-serif;
+  line-height: 1;
+}
+.cnt-btn:hover { background: var(--verde); color: var(--blanco); border-color: var(--verde); }
+.cnt-val { font-size: 14px; font-weight: bold; min-width: 20px; text-align: center; color: var(--azul); }
+
+/* CHECKBOX estilo */
+.check-sancion {
+  width: 20px; height: 20px;
+  cursor: pointer;
+  accent-color: var(--azul);
+}
+
+/* REGISTRO GENERAL */
+.registro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media(max-width:600px) { .registro-grid { grid-template-columns: 1fr; } }
+
+.reg-card { border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+.reg-card-head { background: var(--gris-claro); padding: 8px 12px; font-size: 10px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; color: var(--azul); border-bottom: 1px solid var(--rule); }
+.reg-card-body { padding: 12px; }
+
+.reg-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--gris-claro); }
+.reg-row:last-child { border-bottom: none; }
+.reg-label { font-size: 12px; color: var(--gris); }
+.reg-controls { display: flex; align-items: center; gap: 6px; }
+.reg-val { font-size: 18px; font-weight: bold; color: var(--azul); min-width: 30px; text-align: center; }
+
+.timeout-used { display: flex; gap: 6px; flex-wrap: wrap; }
+.timeout-dot {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--rule);
+  background: var(--gris-claro);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.timeout-dot.usado { background: var(--azul); border-color: var(--azul); }
+
+/* OBSERVACIONES */
+.obs-textarea {
+  width: 100%;
+  min-height: 80px;
+  border: 1.5px solid var(--rule);
+  border-radius: 4px;
+  padding: 10px;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  color: var(--gris);
+  resize: vertical;
+  outline: none;
+}
+.obs-textarea:focus { border-color: var(--verde); }
+
+/* BOTONES ACCIÓN */
+.action-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--blanco);
+  border-top: 2px solid var(--rule);
+  padding: 10px 20px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  z-index: 100;
+  justify-content: center;
+}
+
+.act-btn {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 10px 18px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.15s;
+}
+
+.act-btn:active { transform: scale(0.97); }
+.btn-agregar  { background: var(--verde); color: var(--blanco); }
+.btn-limpiar  { background: var(--gris-claro); color: var(--gris); border: 1.5px solid var(--rule); }
+.btn-imprimir { background: var(--azul); color: var(--blanco); }
+.btn-guardar  { background: #1a6b3a; color: var(--blanco); }
+.btn-cargar   { background: var(--amarillo); color: var(--blanco); }
+
+/* PRINT */
+@media print {
+  .action-bar { display: none; }
+  body { background: white; padding-bottom: 0; }
+  .sec { break-inside: avoid; }
+  .header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .sec-head { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .tabla-jugadores th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+@media(max-width:700px) {
+  .tabla-jugadores { font-size: 11px; }
+  .col-nombre { min-width: 100px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="brand">Planilla <span>Balonmano</span></div>
+    <div class="header-tag">Herramienta Didáctica · Arbitraje · 4to año Profesorado</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- DATOS DEL PARTIDO -->
+  <div class="sec">
+    <div class="sec-head">
+      <div class="sec-title">Datos del Partido</div>
+    </div>
+    <div class="sec-body">
+      <div class="datos-grid">
+        <div class="field"><label>Sede</label><input type="text" id="d-sede" placeholder="Nombre del lugar"></div>
+        <div class="field"><label>Fecha</label><input type="date" id="d-fecha"></div>
+        <div class="field"><label>Hora</label><input type="time" id="d-hora"></div>
+        <div class="field"><label>Categoría</label>
+          <select id="d-cat">
+            <option value="">Seleccioná</option>
+            <option>Mini Balonmano</option>
+            <option>Infantil</option>
+            <option>Cadete</option>
+            <option>Juvenil</option>
+            <option>Adulto</option>
+            <option>Mayor</option>
+          </select>
+        </div>
+        <div class="field"><label>Torneo / Competencia</label><input type="text" id="d-torneo" placeholder="Nombre del torneo"></div>
+        <div class="field"><label>Equipo A</label><input type="text" id="d-eqA" placeholder="Nombre equipo A" oninput="syncNombres()"></div>
+        <div class="field"><label>Equipo B</label><input type="text" id="d-eqB" placeholder="Nombre equipo B" oninput="syncNombres()"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MARCADOR -->
+  <div class="sec">
+    <div class="sec-head"><div class="sec-title">Marcador</div></div>
+    <div class="sec-body">
+      <div class="marcador-wrap">
+        <div class="marcador-equipo">
+          <div class="marcador-nombre" id="marc-nameA">Equipo A</div>
+        </div>
+        <div class="marcador-tiempos">
+          <div class="tiempo-row">
+            <div class="tiempo-label">1er tiempo</div>
+            <div class="tiempo-val">
+              <input class="marcador-input" type="number" id="m-a1" min="0" value="0">
+              <span style="font-size:20px;color:var(--rule);">–</span>
+              <input class="marcador-input" type="number" id="m-b1" min="0" value="0">
+            </div>
+          </div>
+          <div class="tiempo-row">
+            <div class="tiempo-label">2do tiempo</div>
+            <div class="tiempo-val">
+              <input class="marcador-input" type="number" id="m-a2" min="0" value="0">
+              <span style="font-size:20px;color:var(--rule);">–</span>
+              <input class="marcador-input" type="number" id="m-b2" min="0" value="0">
+            </div>
+          </div>
+          <div class="tiempo-row">
+            <div class="tiempo-label" style="font-weight:bold;color:var(--azul);opacity:1;">Resultado final</div>
+            <div class="tiempo-val">
+              <input class="marcador-input final" type="number" id="m-af" min="0" value="0">
+              <span style="font-size:28px;color:var(--azul);font-weight:bold;">–</span>
+              <input class="marcador-input final" type="number" id="m-bf" min="0" value="0">
+            </div>
+          </div>
+        </div>
+        <div class="marcador-equipo">
+          <div class="marcador-nombre" id="marc-nameB">Equipo B</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLA EQUIPO A -->
+  <div class="sec">
+    <div class="sec-head">
+      <div class="sec-title" id="head-eqA">Equipo A — Jugadores</div>
+      <button onclick="agregarJugador('A')" style="background:var(--verde);color:white;border:none;border-radius:4px;padding:5px 12px;font-size:11px;font-weight:bold;cursor:pointer;">+ Jugador</button>
+    </div>
+    <div class="sec-body" style="padding:0;overflow-x:auto;">
+      <table class="tabla-jugadores">
+        <thead>
+          <tr>
+            <th class="col-num">N°</th>
+            <th class="col-nombre left">Nombre y Apellido</th>
+            <th class="col-goles">Goles</th>
+            <th class="col-7m">7 m</th>
+            <th class="col-amon">Amon.</th>
+            <th class="col-excl">2 min</th>
+            <th class="col-desc">Desc.</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-A"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TABLA EQUIPO B -->
+  <div class="sec">
+    <div class="sec-head">
+      <div class="sec-title" id="head-eqB">Equipo B — Jugadores</div>
+      <button onclick="agregarJugador('B')" style="background:var(--verde);color:white;border:none;border-radius:4px;padding:5px 12px;font-size:11px;font-weight:bold;cursor:pointer;">+ Jugador</button>
+    </div>
+    <div class="sec-body" style="padding:0;overflow-x:auto;">
+      <table class="tabla-jugadores">
+        <thead>
+          <tr>
+            <th class="col-num">N°</th>
+            <th class="col-nombre left">Nombre y Apellido</th>
+            <th class="col-goles">Goles</th>
+            <th class="col-7m">7 m</th>
+            <th class="col-amon">Amon.</th>
+            <th class="col-excl">2 min</th>
+            <th class="col-desc">Desc.</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-B"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- REGISTRO GENERAL -->
+  <div class="sec">
+    <div class="sec-head"><div class="sec-title">Registro General del Partido</div></div>
+    <div class="sec-body">
+      <div class="registro-grid">
+
+        <!-- Equipo A -->
+        <div class="reg-card">
+          <div class="reg-card-head" id="reg-nameA">Equipo A</div>
+          <div class="reg-card-body">
+            <div class="reg-row">
+              <div class="reg-label">Goles totales</div>
+              <div class="reg-controls">
+                <button class="cnt-btn" onclick="cambiarReg('golesA',-1)">−</button>
+                <div class="reg-val" id="reg-golesA">0</div>
+                <button class="cnt-btn" onclick="cambiarReg('golesA',1)">+</button>
+              </div>
+            </div>
+            <div class="reg-row">
+              <div class="reg-label">Time out</div>
+              <div class="reg-controls">
+                <div class="timeout-used" id="to-A">
+                  <div class="timeout-dot" onclick="toggleTimeout('A',0)" id="to-A-0"></div>
+                  <div class="timeout-dot" onclick="toggleTimeout('A',1)" id="to-A-1"></div>
+                  <div class="timeout-dot" onclick="toggleTimeout('A',2)" id="to-A-2"></div>
+                </div>
+              </div>
+            </div>
+            <div class="reg-row">
+              <div class="reg-label">Exclusiones 2 min</div>
+              <div class="reg-controls">
+                <button class="cnt-btn" onclick="cambiarReg('exclA',-1)">−</button>
+                <div class="reg-val" id="reg-exclA">0</div>
+                <button class="cnt-btn" onclick="cambiarReg('exclA',1)">+</button>
+              </div>
+            </div>
+            <div class="reg-row">
+              <div class="reg-label">Descalificaciones</div>
+              <div class="reg-controls">
+                <button class="cnt-btn" onclick="cambiarReg('descA',-1)">−</button>
+                <div class="reg-val" id="reg-descA">0</div>
+                <button class="cnt-btn" onclick="cambiarReg('descA',1)">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Equipo B -->
+        <div class="reg-card">
+          <div class="reg-card-head" id="reg-nameB">Equipo B</div>
+          <div class="reg-card-body">
+            <div class="reg-row">
+              <div class="reg-label">Goles totales</div>
+              <div class="reg-controls">
+                <button class="cnt-btn" onclick="cambiarReg('golesB',-1)">−</button>
+                <div class="reg-val" id="reg-golesB">0</div>
+                <button class="cnt-btn" onclick="cambiarReg('golesB',1)">+</button>
+              </div>
+            </div>
+            <div class="reg-row">
+              <div class="reg-label">Time out</div>
+              <div class="reg-controls">
+                <div class="timeout-used" id="to-B">
+                  <div class="timeout-dot" onclick="toggleTimeout('B',0)" id="to-B-0"></div>
+                  <div class="timeout-dot" onclick="toggleTimeout('B',1)" id="to-B-1"></div>
+                  <div class="timeout-dot" onclick="toggleTimeout('B',2)" id="to-B-2"></div>
+                </div>
+              </div>
+            </div>
+            <div class="reg-row">
+              <div class="reg-label">Exclusiones 2 min</div>
+              <div class="reg-controls">
+                <button class="cnt-btn" onclick="cambiarReg('exclB',-1)">−</button>
+                <div class="reg-val" id="reg-exclB">0</div>
+                <button class="cnt-btn" onclick="cambiarReg('exclB',1)">+</button>
+              </div>
+            </div>
+            <div class="reg-row">
+              <div class="reg-label">Descalificaciones</div>
+              <div class="reg-controls">
+                <button class="cnt-btn" onclick="cambiarReg('descB',-1)">−</button>
+                <div class="reg-val" id="reg-descB">0</div>
+                <button class="cnt-btn" onclick="cambiarReg('descB',1)">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- OBSERVACIONES -->
+      <div style="margin-top:14px;">
+        <div style="font-size:10px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:var(--azul);margin-bottom:6px;">Observaciones / Sanciones / Incidencias</div>
+        <textarea class="obs-textarea" id="observaciones" placeholder="Registrá aquí incidencias, sanciones especiales, observaciones del partido…"></textarea>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BARRA DE ACCIONES -->
+<div class="action-bar">
+  <button class="act-btn btn-imprimir" onclick="window.print()">Imprimir</button>
+  <button class="act-btn btn-guardar"  onclick="guardar()">Guardar</button>
+  <button class="act-btn btn-cargar"   onclick="cargar()">Cargar</button>
+  <button class="act-btn btn-limpiar"  onclick="limpiar()">Limpiar planilla</button>
+</div>
+
+<script>
+// ── Estado ───────────────────────────────────────────────
+let jugadores = { A: [], B: [] };
+let reg = { golesA:0, golesB:0, exclA:0, exclB:0, descA:0, descB:0 };
+let timeouts = { A:[false,false,false], B:[false,false,false] };
+let jugIdSeq = 0;
+
+// ── Jugadores ────────────────────────────────────────────
+function agregarJugador(eq) {
+  if (jugadores[eq].length >= 16) { alert('Máximo 16 jugadores por equipo.'); return; }
+  jugadores[eq].push({ id: ++jugIdSeq, numero:'', nombre:'', goles:0, m7:0, amon:false, excl:0, desc:false });
+  renderTabla(eq);
+}
+
+function eliminarJugador(eq, id) {
+  jugadores[eq] = jugadores[eq].filter(j => j.id !== id);
+  renderTabla(eq);
+}
+
+function updateField(eq, id, campo, val) {
+  const j = jugadores[eq].find(j => j.id === id);
+  if (j) j[campo] = val;
+}
+
+function cambiarContador(eq, id, campo, delta) {
+  const j = jugadores[eq].find(j => j.id === id);
+  if (!j) return;
+  j[campo] = Math.max(0, j[campo] + delta);
+  renderTabla(eq);
+}
+
+function renderTabla(eq) {
+  const tbody = document.getElementById('tbody-' + eq);
+  tbody.innerHTML = '';
+  jugadores[eq].forEach(j => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="col-num"><input type="number" min="1" max="99" value="${j.numero}" placeholder="—" onchange="updateField('${eq}',${j.id},'numero',this.value)" style="width:40px;text-align:center;"></td>
+      <td class="col-nombre" style="text-align:left;">
+        <input type="text" value="${j.nombre}" placeholder="Nombre y Apellido" onchange="updateField('${eq}',${j.id},'nombre',this.value)" style="width:100%;min-width:140px;">
+      </td>
+      <td class="col-goles">
+        <div class="counter-wrap">
+          <button class="cnt-btn" onclick="cambiarContador('${eq}',${j.id},'goles',-1)">−</button>
+          <span class="cnt-val">${j.goles}</span>
+          <button class="cnt-btn" onclick="cambiarContador('${eq}',${j.id},'goles',1)">+</button>
+        </div>
+      </td>
+      <td class="col-7m">
+        <div class="counter-wrap">
+          <button class="cnt-btn" onclick="cambiarContador('${eq}',${j.id},'m7',-1)">−</button>
+          <span class="cnt-val">${j.m7}</span>
+          <button class="cnt-btn" onclick="cambiarContador('${eq}',${j.id},'m7',1)">+</button>
+        </div>
+      </td>
+      <td class="col-amon"><input type="checkbox" class="check-sancion" ${j.amon?'checked':''} onchange="updateField('${eq}',${j.id},'amon',this.checked)"></td>
+      <td class="col-excl">
+        <div class="counter-wrap">
+          <button class="cnt-btn" onclick="cambiarContador('${eq}',${j.id},'excl',-1)">−</button>
+          <span class="cnt-val">${j.excl}</span>
+          <button class="cnt-btn" onclick="cambiarContador('${eq}',${j.id},'excl',1)">+</button>
+        </div>
+      </td>
+      <td class="col-desc"><input type="checkbox" class="check-sancion" ${j.desc?'checked':''} onchange="updateField('${eq}',${j.id},'desc',this.checked)"></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// ── Registro general ─────────────────────────────────────
+function cambiarReg(campo, delta) {
+  reg[campo] = Math.max(0, reg[campo] + delta);
+  document.getElementById('reg-' + campo).textContent = reg[campo];
+}
+
+function toggleTimeout(eq, idx) {
+  timeouts[eq][idx] = !timeouts[eq][idx];
+  document.getElementById('to-' + eq + '-' + idx).classList.toggle('usado', timeouts[eq][idx]);
+}
+
+// ── Sync nombres ─────────────────────────────────────────
+function syncNombres() {
+  const a = document.getElementById('d-eqA').value || 'Equipo A';
+  const b = document.getElementById('d-eqB').value || 'Equipo B';
+  document.getElementById('marc-nameA').textContent = a;
+  document.getElementById('marc-nameB').textContent = b;
+  document.getElementById('head-eqA').textContent = a + ' — Jugadores';
+  document.getElementById('head-eqB').textContent = b + ' — Jugadores';
+  document.getElementById('reg-nameA').textContent = a;
+  document.getElementById('reg-nameB').textContent = b;
+}
+
+// ── Guardar / Cargar ─────────────────────────────────────
+function recogerDatos() {
+  return {
+    sede: document.getElementById('d-sede').value,
+    fecha: document.getElementById('d-fecha').value,
+    hora: document.getElementById('d-hora').value,
+    cat: document.getElementById('d-cat').value,
+    torneo: document.getElementById('d-torneo').value,
+    eqA: document.getElementById('d-eqA').value,
+    eqB: document.getElementById('d-eqB').value,
+    marcador: {
+      a1: document.getElementById('m-a1').value,
+      b1: document.getElementById('m-b1').value,
+      a2: document.getElementById('m-a2').value,
+      b2: document.getElementById('m-b2').value,
+      af: document.getElementById('m-af').value,
+      bf: document.getElementById('m-bf').value,
+    },
+    jugadores,
+    reg,
+    timeouts,
+    observaciones: document.getElementById('observaciones').value,
+  };
+}
+
+function guardar() {
+  try {
+    localStorage.setItem('planilla-balonmano', JSON.stringify(recogerDatos()));
+    alert('Planilla guardada correctamente.');
+  } catch(e) {
+    alert('No se pudo guardar. Es posible que el navegador no tenga localStorage disponible.');
+  }
+}
+
+function cargar() {
+  try {
+    const raw = localStorage.getItem('planilla-balonmano');
+    if (!raw) { alert('No hay planilla guardada.'); return; }
+    const d = JSON.parse(raw);
+    document.getElementById('d-sede').value   = d.sede   || '';
+    document.getElementById('d-fecha').value  = d.fecha  || '';
+    document.getElementById('d-hora').value   = d.hora   || '';
+    document.getElementById('d-cat').value    = d.cat    || '';
+    document.getElementById('d-torneo').value = d.torneo || '';
+    document.getElementById('d-eqA').value    = d.eqA    || '';
+    document.getElementById('d-eqB').value    = d.eqB    || '';
+    document.getElementById('m-a1').value = d.marcador?.a1 || 0;
+    document.getElementById('m-b1').value = d.marcador?.b1 || 0;
+    document.getElementById('m-a2').value = d.marcador?.a2 || 0;
+    document.getElementById('m-b2').value = d.marcador?.b2 || 0;
+    document.getElementById('m-af').value = d.marcador?.af || 0;
+    document.getElementById('m-bf').value = d.marcador?.bf || 0;
+    document.getElementById('observaciones').value = d.observaciones || '';
+    jugadores = d.jugadores || { A:[], B:[] };
+    reg = d.reg || { golesA:0, golesB:0, exclA:0, exclB:0, descA:0, descB:0 };
+    timeouts = d.timeouts || { A:[false,false,false], B:[false,false,false] };
+    Object.keys(reg).forEach(k => { const el = document.getElementById('reg-'+k); if(el) el.textContent = reg[k]; });
+    ['A','B'].forEach(eq => {
+      timeouts[eq].forEach((v,i) => document.getElementById('to-'+eq+'-'+i).classList.toggle('usado',v));
+      renderTabla(eq);
+    });
+    syncNombres();
+    alert('Planilla cargada correctamente.');
+  } catch(e) {
+    alert('Error al cargar la planilla guardada.');
+  }
+}
+
+function limpiar() {
+  if (!confirm('¿Limpiar toda la planilla? Esta acción no se puede deshacer.')) return;
+  document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(i => i.value = '');
+  document.querySelectorAll('input[type="date"], input[type="time"]').forEach(i => i.value = '');
+  document.querySelectorAll('input[type="checkbox"]').forEach(i => i.checked = false);
+  document.querySelectorAll('.marcador-input').forEach(i => i.value = 0);
+  jugadores = { A:[], B:[] };
+  reg = { golesA:0, golesB:0, exclA:0, exclB:0, descA:0, descB:0 };
+  timeouts = { A:[false,false,false], B:[false,false,false] };
+  Object.keys(reg).forEach(k => { const el = document.getElementById('reg-'+k); if(el) el.textContent = 0; });
+  ['A','B'].forEach(eq => {
+    timeouts[eq].forEach((_,i) => document.getElementById('to-'+eq+'-'+i).classList.remove('usado'));
+    renderTabla(eq);
+  });
+  syncNombres();
+}
+
+// ── Init ─────────────────────────────────────────────────
+// Agregar jugadores iniciales
+for(let i=0;i<7;i++) { agregarJugador('A'); agregarJugador('B'); }
+</script>
+</body>
+</html>
