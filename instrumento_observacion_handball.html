@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Observatorio Handball</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F4F4F6;
+  --card: #ffffff;
+  --ink: #333333;
+  --ink2: #4a4540;
+  --muted: #9a9188;
+  --rule: #e0d8ce;
+  --green: #007a6b;
+  --green-bg: #e0f5f3;
+  --amber: #0D3B66;
+  --amber-bg: #e8f0f8;
+  --red: #b02a1a;
+  --red-bg: #fdf0ee;
+  --blue: #1a3a6b;
+  --blue-bg: #edf1f9;
+  --purple: #5b2d8e;
+  --purple-bg: #f3eef9;
+  --teal: #00A896;
+  --teal-bg: #e0f5f3;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  padding-bottom: 100px;
+}
+
+/* HEADER */
+.hero {
+  background: #0D3B66;
+  color: #f7f4ef;
+  padding: 28px 20px 22px;
+}
+
+.hero .kicker {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  opacity: 0.55;
+  margin-bottom: 6px;
+}
+
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+.hero h1 span { color: #f59e0b; }
+
+.hero .sub {
+  font-size: 13px;
+  opacity: 0.6;
+  font-style: italic;
+}
+
+/* DATOS */
+.datos-wrap {
+  background: var(--card);
+  border-bottom: 1.5px solid var(--rule);
+  padding: 18px 20px;
+}
+
+.datos-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.field-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.field input, .field select {
+  border: 1.5px solid var(--rule);
+  border-radius: 6px;
+  padding: 9px 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--bg);
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.field input:focus, .field select:focus {
+  border-color: var(--ink);
+}
+
+.field.full { grid-column: 1 / -1; }
+
+/* LEYENDA */
+.leyenda {
+  display: flex;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--rule);
+  flex-wrap: wrap;
+  overflow-x: auto;
+}
+
+.lbadge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* DIMENSIONES */
+.dim {
+  margin: 0;
+  border-bottom: 2px solid var(--rule);
+}
+
+.dim-hd {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  cursor: pointer;
+  user-select: none;
+}
+
+.dim-hd .d-icon { font-size: 20px; flex-shrink: 0; }
+
+.dim-hd .d-info { flex: 1; }
+
+.dim-hd .d-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.dim-hd .d-sub {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  opacity: 0.65;
+  margin-top: 1px;
+}
+
+.dim-hd .d-arrow {
+  font-size: 16px;
+  transition: transform 0.25s;
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+.dim-hd.open .d-arrow { transform: rotate(180deg); }
+
+.dim-body { display: none; }
+.dim-body.open { display: block; }
+
+/* INDICADORES */
+.ind {
+  background: var(--card);
+  margin: 0 12px 10px;
+  border-radius: 10px;
+  padding: 16px;
+  border: 1px solid var(--rule);
+}
+
+.ind:first-child { margin-top: 12px; }
+.ind:last-child { margin-bottom: 14px; }
+
+.ind-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.ind-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ink);
+  flex: 1;
+  line-height: 1.35;
+}
+
+.nivel-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 1px;
+  padding: 3px 7px;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.nb-b { background: var(--green-bg); color: var(--green); border: 1px solid var(--green); }
+.nb-a { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber); }
+.nb-e { background: var(--red-bg);   color: var(--red);   border: 1px solid var(--red);   }
+
+.ind-desc {
+  font-size: 12.5px;
+  color: var(--ink2);
+  line-height: 1.55;
+  margin-bottom: 12px;
+  font-style: italic;
+}
+
+/* NOTA EXPERTO */
+.nota-exp {
+  background: var(--red-bg);
+  border-left: 3px solid var(--red);
+  border-radius: 0 6px 6px 0;
+  padding: 8px 12px;
+  font-size: 11.5px;
+  color: var(--red);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+/* ESCALA */
+.escala {
+  display: flex;
+  gap: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1.5px solid var(--rule);
+}
+
+.escala input[type="radio"] { display: none; }
+
+.escala label {
+  flex: 1;
+  text-align: center;
+  padding: 9px 4px;
+  font-size: 11px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  color: var(--muted);
+  background: var(--bg);
+  cursor: pointer;
+  border-right: 1px solid var(--rule);
+  line-height: 1.3;
+  transition: background 0.15s, color 0.15s;
+}
+
+.escala label:last-child { border-right: none; }
+
+.escala input[type="radio"]:checked + label {
+  background: #0D3B66;
+  color: #f7f4ef;
+}
+
+/* CHECKBOXES */
+.checks-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 12px 0 8px;
+}
+
+.checks {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.check-item input[type="checkbox"] { display: none; }
+
+.check-box {
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--rule);
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  background: var(--bg);
+}
+
+.check-item input:checked ~ .check-box {
+  background: #0D3B66;
+  border-color: var(--ink);
+}
+
+.check-item input:checked ~ .check-box::after {
+  content: '✓';
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.check-label {
+  font-size: 13px;
+  color: var(--ink2);
+  line-height: 1.45;
+  flex: 1;
+}
+
+/* SEPARADOR */
+.sep { height: 1px; background: var(--rule); margin: 12px 0; }
+
+/* SÍNTESIS */
+.sintesis-wrap {
+  padding: 16px 12px 0;
+}
+
+.sint-card {
+  background: var(--card);
+  border-radius: 10px;
+  border: 1px solid var(--rule);
+  padding: 16px;
+  margin-bottom: 10px;
+}
+
+.sint-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: var(--ink);
+}
+
+.sint-desc {
+  font-size: 12.5px;
+  color: var(--ink2);
+  font-style: italic;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.radio-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.radio-item input[type="radio"] { display: none; }
+
+.radio-dot {
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--rule);
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  background: var(--bg);
+}
+
+.radio-item input:checked ~ .radio-dot {
+  background: #0D3B66;
+  border-color: var(--ink);
+}
+
+.radio-item input:checked ~ .radio-dot::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+.radio-label {
+  font-size: 13px;
+  color: var(--ink2);
+  line-height: 1.45;
+  flex: 1;
+}
+
+/* VACÍOS */
+.vacios-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vacio-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border-radius: 6px;
+  border: 1px solid var(--rule);
+  cursor: pointer;
+}
+
+.vacio-item input[type="checkbox"] { display: none; }
+
+.vacio-check {
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--rule);
+  border-radius: 4px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  background: white;
+}
+
+.vacio-item input:checked ~ .vacio-check {
+  background: var(--red);
+  border-color: var(--red);
+}
+
+.vacio-item input:checked ~ .vacio-check::after {
+  content: '!';
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.vacio-label {
+  font-size: 12.5px;
+  color: var(--ink2);
+  flex: 1;
+  line-height: 1.4;
+}
+
+/* BOTÓN PDF */
+.pdf-section {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1.5px solid var(--rule);
+  padding: 14px 20px;
+  display: flex;
+  gap: 10px;
+  z-index: 100;
+}
+
+.btn-pdf {
+  flex: 1;
+  background: #0D3B66;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+}
+
+.btn-pdf:active { opacity: 0.8; } .btn-pdf:hover { background: #00A896; }
+
+.btn-reset {
+  background: var(--bg);
+  color: var(--muted);
+  border: 1.5px solid var(--rule);
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+/* PROGRESS */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: #f59e0b;
+  transition: width 0.3s;
+  z-index: 200;
+}
+
+/* PRINT */
+@media print {
+  .pdf-section, .progress-bar { display: none; }
+  .dim-body { display: block !important; }
+  .dim-hd { position: static; }
+  body { padding-bottom: 0; }
+  .ind { break-inside: avoid; }
+}
+
+@media (prefers-color-scheme: dark) {
+  /* keep light for print clarity */
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- HERO -->
+<div class="inst-header" style="background:#0D3B66;color:white;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;"><div><div style="font-size:18px;font-weight:bold;letter-spacing:1px;">IMEF Comunidad</div><div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;opacity:0.7;margin-top:2px;">Instituto Modelo de Educación Física</div><div style="width:30px;height:3px;background:#00A896;margin-top:6px;border-radius:2px;"></div></div><div style="text-align:right;font-size:9px;opacity:0.6;line-height:1.8;">Medrano 155, Banfield, Bs.As.<br>Tel: 4202-0665</div></div><div class="hero">
+  <div class="kicker">Didáctica · Handball · 4to año Profesorado</div>
+  <h1>Ficha de<br><span>Observación</span></h1>
+  <div class="sub">Instrumento para análisis de partido · Uso autónomo</div>
+</div>
+
+<!-- DATOS DEL PARTIDO -->
+<div class="datos-wrap">
+  <div class="datos-title">Datos del partido</div>
+  <div class="field-group">
+    <div class="field">
+      <label>Fecha</label>
+      <input type="date" id="f-fecha">
+    </div>
+    <div class="field">
+      <label>Categoría</label>
+      <select id="f-cat">
+        <option value="">Seleccioná</option>
+        <option>Mini Handball</option>
+        <option>Infantil</option>
+        <option>Cadete</option>
+        <option>Juvenil</option>
+        <option>Adulto</option>
+        <option>Mayor</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Equipo observado</label>
+      <input type="text" id="f-equipo" placeholder="Nombre del equipo">
+    </div>
+    <div class="field">
+      <label>Rival</label>
+      <input type="text" id="f-rival" placeholder="Nombre del rival">
+    </div>
+    <div class="field">
+      <label>Resultado</label>
+      <input type="text" id="f-resultado" placeholder="Ej: 18 – 14">
+    </div>
+    <div class="field">
+      <label>Observador</label>
+      <input type="text" id="f-obs" placeholder="Tu nombre">
+    </div>
+  </div>
+</div>
+
+<!-- LEYENDA -->
+<div class="leyenda">
+  <span class="lbadge nb-b">● Básico</span>
+  <span style="font-size:11px;color:var(--muted);align-self:center;">Accesible ahora</span>
+  <span class="lbadge nb-a">● Avanzado</span>
+  <span style="font-size:11px;color:var(--muted);align-self:center;">Requiere más formación</span>
+  <span class="lbadge nb-e">● Experto</span>
+  <span style="font-size:11px;color:var(--muted);align-self:center;">Contenido a trabajar</span>
+</div>
+
+<!-- ============ DIM 1: TÉCNICA INDIVIDUAL ============ -->
+<div class="dim">
+  <div class="dim-hd open" style="background:var(--green-bg);" onclick="toggleDim(this)">
+    <div class="d-icon">🤾</div>
+    <div class="d-info">
+      <div class="d-title" style="color:var(--green);">Técnica Individual</div>
+      <div class="d-sub" style="color:var(--green);">Dimensión I · Gestos técnicos</div>
+    </div>
+    <div class="d-arrow">▼</div>
+  </div>
+  <div class="dim-body open">
+
+    <!-- T1 -->
+    <div class="ind">
+      <div class="ind-top">
+        <div class="ind-title">Tipo de lanzamiento predominante</div>
+        <span class="nivel-badge nb-a">Avanzado</span>
+      </div>
+      <div class="ind-desc">¿Qué tipo de lanzamiento usan con más frecuencia?</div>
+      <div class="checks-title">Marcá los que observás</div>
+      <div class="checks">
+        <label class="check-item"><input type="checkbox" id="t1a"><div class="check-box"></div><span class="check-label">En apoyo (pies en el suelo)</span></label>
+        <label class="check-item"><input type="checkbox" id="t1b"><div class="check-box"></div><span class="check-label">En suspensión (salto)</span></label>
+        <label class="check-item"><input type="checkbox" id="t1c"><div class="check-box"></div><span class="check-label">En caída</span></label>
+        <label class="check-item"><input type="checkbox" id="t1d"><div class="check-box"></div><span class="check-label">De extremo (ángulo cerrado)</span></label>
+        <label class="check-item"><input type="checkbox" id="t1e"><div class="check-box"></div><span class="check-label">Penalty / 7 metros</span></label>
+      </div>
+      <div class="sep"></div>
+      <div class="checks-title">Calidad general del lanzamiento</div>
+      <div class="escala">
+        <input type="radio" name="e-t1" id="e-t1-1"><label for="e-t1-1">No se<br>observa</label>
+        <input type="radio" name="e-t1" id="e-t1-2"><label for="e-t1-2">Muy<br>bajo</label>
+        <input type="radio" name="e-t1" id="e-t1-3"><label for="e-t1-3">Regular</label>
+        <input type="radio" name="e-t1" id="e-t1-4"><label for="e-t1-4">Bueno</label>
+        <input type="radio" name="e-t1" id="e-t1-5"><label for="e-t1-5">Muy<br>bueno</label>
+      </div>
+    </div>
+
+    <!-- T2 -->
+    <div class="ind">
+      <div class="ind-top">
+        <div class="ind-title">Pase y recepción</div>
+        <span class="nivel-badge nb-b">Básico</span>
+      </div>
+      <div class="ind-desc">¿Cómo es la calidad del pase y la recepción durante el partido?</div>
+      <div class="checks-title">Marcá los que observás</div>
+      <div class="checks">
+        <label class="check-item"><input type="checkbox" id="t2a"><div class="check-box"></div><span class="check-label">Pases precisos y con velocidad adecuada</span></label>
+        <label class="check-item"><input type="checkbox" id="t2b"><div class="check-box"></div><span class="check-label">Muchas pérdidas por pase erróneo</span></label>
+        <label class="check-item"><input type="checkbox" id="t2c"><div class="check-box"></div><span class="check-label">Muchas pérdidas por recepción fallida</span></label>
+        <label class="check-item"><input type="checkbox" id="t2d"><div class="check-box"></div><span class="check-label">Usan variedad de pases (picado, lateral, largo)</span></label>
+        <label class="check-item"><input type="checkbox" id="t2e"><div class="check-box"></div><span class="check-label">Pases siempre cortos / sin profundidad</span></label>
+      </div>
+      <div class="sep"></div>
+      <div class="escala">
+        <input type="radio" name="e-t2" id="e-t2-1"><label for="e-t2-1">No se<br>observa</label>
+        <input type="radio" name="e-t2" id="e-t2-2"><label for="e-t2-2">Muy<br>bajo</label>
+        <input type="radio" name="e-t2" id="e-t2-3"><label for="e-t2-3">Regular</label>
+        <input type="radio" name="e-t2" id="e-t2-4"><label for="e-t2-4">Bueno</label>
+        <input type="radio" name="e-t2" id="e-t2-5"><label for="e-t2-5">Muy<br>bueno</label>
+      </div>
+    </div>
+
+    <!-- T3 -->
+    <div class="ind">
+      <div class="ind-top">
+        <div class="ind-title">Finta y 1 vs 1</div>
+        <span class="nivel-badge nb-e">Experto</span>
+      </div>
+      <div class="ind-desc">Acciones de engaño antes del lanzamiento o penetración.</div>
+      <div class="nota-exp">⚠️ Este indicador requiere conocer los tipos de finta (cuerpo, brazo, mirada) y el concepto de disociación segmentaria. Si no lo sabés aún, marcá "No puedo evaluarlo" — es un contenido que vas a trabajar más adelante.</div>
+      <div class="checks-title">Marcá lo que observás</div>
+      <div class="checks">
+        <label class="check-item"><input type="checkbox" id="t3a"><div class="check-box"></div><span class="check-label">Se observan fintas de cuerpo</span></label>
+        <label class="check-item"><input type="checkbox" id="t3b"><div class="check-box"></div><span class="check-label">Se observan fintas de brazo / amago de lanzamiento</span></label>
+        <label class="check-item"><input type="checkbox" id="t3c"><div class="check-box"></div><span class="check-label">Se observan fintas de mirada</span></label>
+        <label class="check-item"><input type="checkbox" id="t3d"><div class="check-box"></div><span class="check-label">No se observan fintas claras</span></label>
+        <label class="check-item"><input type="checkbox" id="t3e"><div class="check-box"></div><span class="check-label">No puedo evaluarlo todavía</span></label>
+      </div>
+    </div>
+
+    <!-- T4 -->
+    <div class="ind">
+      <div class="ind-top">
+        <div class="ind-title">Técnica defensiva individual</div>
+        <span class="nivel-badge nb-e">Experto</span>
+      </div>
+      <div class="ind-desc">Posición básica defensiva, marcación, pressing.</div>
+      <div class="nota-exp">⚠️ Para evaluar este indicador necesitás conocer los sistemas defensivos y la posición básica defensiva del handball. Es un contenido que vas a profundizar en las próximas unidades.</div>
+      <div class="checks">
+        <label class="check-item"><input type="checkbox" id="t4a"><div class="check-box"></div><span class="check-label">Defensores en posición básica correcta (rodillas flexionadas, brazos activos)</span></label>
+        <label class="check-item"><input type="checkbox" id="t4b"><div class="check-box"></div><span class="check-label">Marcación individual visible</span></label>
+        <label class="check-item"><input type="checkbox" id="t4c"><div class="check-box"></div><span class="check-label">Defensa en zona (cada uno cuida un espacio)</span></label>
+        <label class="check-item"><input type="checkbox" id="t4d"><div class="check-box"></div><span class="check-label">Defensa desorganizada / sin sistema claro</span></label>
+        <label class="check-item"><input type="checkbox" id="t4e"><div class="check-box"></div><span class="check-label">No puedo evaluarlo todavía</span></label>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ DIM 2: TÁCTICA INDIVIDUAL ============ -->
+<div class="dim">
+  <div class="dim-hd" style="background:var(--amber-bg);" onclick="toggleDim(this)">
+    <div class="d-icon">🧭</div>
+    <div class="d-info">
+      <div class="d-title" style="color:var(--amber);">Táctica Individual</div>
+      <div class="d-sub" style="color:var(--amber);">Dimensión II · Decisiones en juego</div>
+    </div>
+    <div class="d-arrow">▼</div>
+  </div>
+  <div class="dim-body">
+
+    <!-- TI1 -->
+    <div class="ind">
+      <div class="ind-top">
+        <div class="ind-title">Toma de decisión con balón</div>
+        <span class="nivel-badge nb-b">Básico</span>
+      </div>
+      <div class="ind-desc">¿El jugador con balón elige correctamente entre lanzar, pasar o avanzar?</div>
+      <div class="checks-title">¿Qué decisión predomina?</div>
+      <div class="checks">
+        <label class="check-item"><input type="checkbox" id="ti1a"><div class="check-box"></div><span class="check-label">Predomina el lanzamiento individual (sin pasar)</span></label>
+        <label class="check-item"><input type="checkbox" id="ti1b"><div class="check-box"></div><span class="check-label">Predomina el pase antes de decidir</span></label>
+        <label class="check-item"><input type="checkbox" id="ti1c"><div class="check-box"></div><span class="check-label">Buena lectura: elige según la situación</span></label>
+        <label class="check-item"><input type="checkbox" id="ti1d"><div class="check-box"></div><span class="check-label">Decisiones lentas / se quedan parados con el balón</span></label>
+      </div>
+      <div class="sep"></div>
+      <div class="escala">
+        <input type="radio" name="e-ti1" id="e-ti1-1"><label for="e-ti1-1">No se<br>observa</label>
+        <input type="radio" name="e-ti1" id="e-ti1-2"><label for="e-ti1-2">Muy<br>bajo</label>
+        <input type="radio" name="e-ti1" id="e-ti1-3"><label for="e-ti1-3">Regular</label>
+        <input type="radio" name="e-ti1" id="e-ti1-4"><label for="e-ti1-4">Bueno</label>
+        <input type="radio" name="e-ti1" id="e-ti1-5"><label for="e-ti1-5">Muy<br>bueno</label>
+      </div>
+    </div>
+
+    <!-- TI2 -->
+    <div class="ind">
+      <div class="ind-top">
+        <div class="ind-title">Desmarque y creación de espacios</div>
+        <span class="nivel-badge nb-a">Avanzado</span>
+      </div>
+      <div class="ind-desc">¿Los jugadores sin balón se mueven para generar opciones de pase?</div>
+      <div class="checks">
+        <label class="check-item"><input type="checkbox" id="ti2a"><div class="check-box"></div><span class="check-label">Los jugadores se desmarcan activamente</span></label>
+        <label class="check-item"><input type="checkbox" id="ti2b"><div class="check-box"></div><span class="check-label">La mayoría se queda estática esperando el balón</span></label>
+        <label class="check-item"><input type="checkbox" id="ti2c"><div class="check-box"></div><span class="check-label">Se generan espacios vacíos para terceros</span></label>
+        <label class="check-item"><input type="checkbox" id="ti2d"><div class="check-box"></div><span class="check-label">Todos van hacia el balón al mismo tiempo</span></label>
+      </div>
+      <div class="sep"></div>
+      <div class="escala">
+        <input type="radio" name="e-ti2" id="e-ti2-1"><label for="e-ti2-1">No se<br>observa</label>
+        <input type="radio" name="e-ti2" id="e-ti2-2"><label for="e-ti2-2">Muy<br>bajo</label>
+        <input type="radio" name="e-ti2" id="e-ti2-3"><label for="e-ti2-3">Regular</label>
+        <input type="radio" name="e-ti2" id="e-ti2-4"><label for="e-ti2-4">Bueno</label>
+        <input type="radio" name="e-ti2" id="e-ti2-5"><label for="e-ti2-5">Muy<br>bueno</label>
+      </div>
+    </div>
+
+    <!-- TI3 -->
+    <div class="ind">
+      <div class="ind-top">
+        <div class="ind-title">Rol del pivot: bloqueo y pantalla</div>
+        <span class="nivel-badge nb-e">Experto</span>
+      </div>
+      <div class="nota-exp">⚠️ Para evaluar este indicador necesitás conocer los conceptos de bloqueo y pantalla táctica. Son medios tácticos específicos del handball que vas a estudiar en profundidad más adelante.</div>
+      <div class="checks">
+        <label class="check-item"><input type="checkbox" id="ti3a"><div class="check-box"></div><span class="check-label">El pivot se mueve para generar espacios a compañeros</span></label>
+        <label class="check-item"><input type="checkbox" id="ti3b"><div class="check-box"></div><span class="check-label">El pivot recibe pases dentro del área</span></label>
+        <label class="check-item"><input type="checkbox" id="ti3c"><div class="check-box"></div><span class="check-label">El pivot no participa activamente del juego</span></label>
+        <label class="check-item"><input type="checkbox" id="ti3d"><div class="check-box"></div><span class="check-label">No puedo evaluarlo todavía</span></label>
+      </div>
+    </div>
+
+    <!-- TI4 -->
+    <div class="ind">
+      <div class="ind-top">
+        <div class="ind-title">Juego del extremo en ángulo cerrado</div>
+        <span class="nivel-badge nb-e">Experto</span>
+      </div>
+      <div class="nota-exp">⚠️ La situación de ángulo cerrado es una problemática táctica específica del extremo. Requiere conocimiento de las opciones tácticas en esa posición.</div>
+      <div class="checks">
+        <label class="check-item"><input type="checkbox" id="ti4a"><div class="check-box"></div><span class="check-label">Fuerza el lanzamiento desde el ángulo</span></label>
+        <label class="check-item"><input type="checkbox" id="ti4b"><div class="check-box"></div><span class="check-label">Devuelve el balón al base o lateral</span></label>
+        <label class="check-item"><input type="checkbox" id="ti4c"><div class="check-box"></div><span class="check-label">Busca el pase al pivot dentro del área</span></label>
+        <label class="check-item"><input type="checkbox" id="ti4d"><div class="check-box"></div><span class="check-label">No puedo evaluarlo todavía</span></label>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ DIM 3: TÁCTICA COLECTIVA ============ -->
+<div class="dim">
+  <div class="dim-hd" style="background:var(--blue-bg);" onclick="toggleDim(this)">
+    <div class="d-icon">🔗</div>
+    <div class="d-info">
+      <div class="d-title" style="color:var(--blue);">Táctica Colectiva</div>
+      <div class="d-sub" style="color:var(--blue);">Dimensión III · Sistemas y organización</div>
+    </div>
+    <div class="d-arrow">▼</div>
+  </div>
+  <div class="dim-body">
+
+    <!-- TC1 -->
+    <div class="ind">
+      <div class="ind-top">
+        <div class="ind-title">Circulación del balón en ataque</div>
+        <span class="nivel-badge nb-b">Básico</span>
+      </div>
+      <div class="ind-desc">¿El balón pasa por todos los jugadores o siempre va al mismo?</div>
+      <div class="checks">
+        <label class="check-item"><input type="checkbox" id="tc1a"><div class="check-box"></div><span class="check-label">El balón circula por todas las posiciones</span></label>
+        <label class="check-item"><input type="checkbox" id="tc1b"><div class="check-box"></div><span class="check-label">Siempre vuelve al mismo jugador (1 o 2 dominan)</span></label>
+        <label class="check-item"><input type="checkbox" id="tc1c"><div class="check-box"></div><span class="check-label">Se observa juego de banda a banda</span></label>
+        <label class="check-item"><input type="checkbox" id="tc1d"><div class="check-box"></div><span class="check-label">El pivot casi nunca recibe el balón</span></label>
+        <label class="check-item"><input type="checkbox" id="tc1e"><div class="check-box"></div><span class="check-label">Los extremos reciben habitualmente</span></label>
+      </div>
+      <div class="sep"></div>
+      <div class="escala">
+        <input type="radio" name="e-tc1" id="e-tc1-1"><label for="e-tc1-1">No se<br>observa</label>
+        <input type="radio" name="e-tc1" id="e-tc1-2"><label for="e-tc1-2">Muy<br>bajo</label>
+        <input type="radio" name="e-tc1" id="e-tc1-3"><label for="e-tc1-3">Regular</label>
+        <input type="radio" name="e-tc1" id="e-tc1-4"><label for="e-tc1-4">Bueno</label>
+        <input type="radio" name="e-tc1" id="e-tc1-5"><label for="e-tc1-5">Muy<br>bueno</label>
+      </div>
+    </div>
+
+    <!-- TC2 -->
+    <div class="ind">
+      <div class="ind-top">
+        <div class="ind-title">Contraataque y transición</div>
+        <span class="nivel-badge nb-a">Avanzado</span>
+      </div>
+      <div class="ind-desc">¿El equipo aprovecha las recuperaciones para atacar rápido?</div>
+      <div class="checks">
+        <label class="check-item"><input type="checkbox" id="tc2a"><div class="check-box"></div><span class="check-label">Hay contraataque organizado tras recuperar el balón</span></label>
+        <label class="check-item"><input type="checkbox" id="tc2b"><div class="check-box"></div><span class="check-label">El portero inicia el contraataque con pase largo</span></label>
+        <label class="check-item"><input type="checkbox" id="tc2c"><div class="check-box"></div><span class="check-label">Hay jugadores posicionados para primera oleada</span></label>
+        <label class="check-item"><input type="checkbox" id="tc2d"><div class="check-box"></div><span class="check-label">No se intenta contraataque / juegan siempre pausado</span></label>
+      </div>
+      <div class="sep"></div>
+      <div class="escala">
+        <input type="radio" name="e-tc2" id="e-tc2-1"><label for="e-tc2-1">No se<br>observa</label>
+        <input type="radio" name="e-tc2" id="e-tc2-2"><label for="e-tc2-2">Muy<br>bajo</label>
+        <input type="radio" name="e-tc2" id="e-tc2-3"><label for="e-tc2-3">Regular</label>
+        <input type="radio" name="e-tc2" id="e-tc2-4"><label for="e-tc2-4">Bueno</label>
+        <input type="radio" name="e-tc2" id="e-tc2-5"><label for="e-tc2-5">Muy<br>bueno</label>
+      </div>
+    </div>
+
+    <!-- TC3 -->
+    <div class="ind">
+      <div class="ind-top">
+        <div class="ind-title">Sistema defensivo</div>
+        <span class="nivel-badge nb-e">Experto</span>
+      </div>
+      <div class="nota-exp">⚠️ Identificar el sistema defensivo (6:0, 5:1, 4:2, 3:2:1…) requiere conocer los sistemas defensivos del handball. Este es un contenido clave que vas a trabajar en las próximas unidades.</div>
+      <div class="checks">
+        <label class="check-item"><input type="checkbox" id="tc3a"><div class="check-box"></div><span class="check-label">Todos los defensores en línea (posible 6:0)</span></label>
+        <label class="check-item"><input type="checkbox" id="tc3b"><div class="check-box"></div><span class="check-label">Un defensor adelantado (posible 5:1)</span></label>
+        <label class="check-item"><input type="checkbox" id="tc3c"><div class="check-box"></div><span class="check-label">Defensa mixta / sin sistema claro</span></label>
+        <label class="check-item"><input type="checkbox" id="tc3d"><div class="check-box"></div><span class="check-label">No puedo identificar el sistema todavía</span></label>
+      </div>
+    </div>
+
+    <!-- TC4 -->
+    <div class="ind">
+      <div class="ind-top">
+        <div class="ind-title">Superioridad numérica</div>
+        <span class="nivel-badge nb-a">Avanzado</span>
+      </div>
+      <div class="ind-desc">¿El equipo genera y aprovecha situaciones de 2v1 o 3v2?</div>
+      <div class="checks">
+        <label class="check-item"><input type="checkbox" id="tc4a"><div class="check-box"></div><span class="check-label">Reconocen y aprovechan las superioridades</span></label>
+        <label class="check-item"><input type="checkbox" id="tc4b"><div class="check-box"></div><span class="check-label">Generan superioridades pero no las resuelven bien</span></label>
+        <label class="check-item"><input type="checkbox" id="tc4c"><div class="check-box"></div><span class="check-label">No parecen buscar superioridad numérica</span></label>
+        <label class="check-item"><input type="checkbox" id="tc4d"><div class="check-box"></div><span class="check-label">Saben defender cuando están en inferioridad</span></label>
+      </div>
+      <div class="sep"></div>
+      <div class="escala">
+        <input type="radio" name="e-tc4" id="e-tc4-1"><label for="e-tc4-1">No se<br>observa</label>
+        <input type="radio" name="e-tc4" id="e-tc4-2"><label for="e-tc4-2">Muy<br>bajo</label>
+        <input type="radio" name="e-tc4" id="e-tc4-3"><label for="e-tc4-3">Regular</label>
+        <input type="radio" name="e-tc4" id="e-tc4-4"><label for="e-tc4-4">Bueno</label>
+        <input type="radio" name="e-tc4" id="e-tc4-5"><label for="e-tc4-5">Muy<br>bueno</label>
+      </div>
+    </div>
+
+    <!-- TC5 -->
+    <div class="ind">
+      <div class="ind-top">
+        <div class="ind-title">Cruce, paralela y penetración</div>
+        <span class="nivel-badge nb-e">Experto</span>
+      </div>
+      <div class="nota-exp">⚠️ El cruce, la paralela y la penetración son medios tácticos colectivos ofensivos del handball. Sin conocerlos es muy difícil identificarlos intencionalmente en el juego. Son contenidos centrales de las próximas unidades.</div>
+      <div class="checks">
+        <label class="check-item"><input type="checkbox" id="tc5a"><div class="check-box"></div><span class="check-label">Se observan cruces entre jugadores</span></label>
+        <label class="check-item"><input type="checkbox" id="tc5b"><div class="check-box"></div><span class="check-label">Se observan penetraciones coordinadas</span></label>
+        <label class="check-item"><input type="checkbox" id="tc5c"><div class="check-box"></div><span class="check-label">Se observan pases en paralela</span></label>
+        <label class="check-item"><input type="checkbox" id="tc5d"><div class="check-box"></div><span class="check-label">No puedo identificarlos todavía</span></label>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ DIM 4: DINÁMICA DE GRUPO ============ -->
+<div class="dim">
+  <div class="dim-hd" style="background:var(--purple-bg);" onclick="toggleDim(this)">
+    <div class="d-icon">🤝</div>
+    <div class="d-info">
+      <div class="d-title" style="color:var(--purple);">Dinámica de Grupo</div>
+      <div class="d-sub" style="color:var(--purple);">Dimensión IV · Cohesión y clima</div>
+    </div>
+    <div class="d-arrow">▼</div>
+  </div>
+  <div class="dim-body">
+
+    <!-- DG1 -->
+    <div class="ind">
+      <div class="ind-top">
+        <div class="ind-title">Comunicación verbal entre jugadores</div>
+        <span class="nivel-badge nb-b">Básico</span>
+      </div>
+      <div class="checks">
+        <label class="check-item"><input type="checkbox" id="dg1a"><div class="check-box"></div><span class="check-label">Se comunican activamente durante el juego</span></label>
+        <label class="check-item"><input type="checkbox" id="dg1b"><div class="check-box"></div><span class="check-label">Hay un jugador que organiza y da indicaciones</span></label>
+        <label class="check-item"><input type="checkbox" id="dg1c"><div class="check-box"></div><span class="check-label">Juegan en silencio / sin comunicación visible</span></label>
+        <label class="check-item"><input type="checkbox" id="dg1d"><div class="check-box"></div><span class="check-label">La comunicación aumenta en momentos de tensión</span></label>
+      </div>
+      <div class="sep"></div>
+      <div class="escala">
+        <input type="radio" name="e-dg1" id="e-dg1-1"><label for="e-dg1-1">No se<br>observa</label>
+        <input type="radio" name="e-dg1" id="e-dg1-2"><label for="e-dg1-2">Muy<br>bajo</label>
+        <input type="radio" name="e-dg1" id="e-dg1-3"><label for="e-dg1-3">Regular</label>
+        <input type="radio" name="e-dg1" id="e-dg1-4"><label for="e-dg1-4">Bueno</label>
+        <input type="radio" name="e-dg1" id="e-dg1-5"><label for="e-dg1-5">Muy<br>bueno</label>
+      </div>
+    </div>
+
+    <!-- DG2 -->
+    <div class="ind">
+      <div class="ind-top">
+        <div class="ind-title">Cohesión ante el error</div>
+        <span class="nivel-badge nb-b">Básico</span>
+      </div>
+      <div class="ind-desc">¿Cómo reacciona el equipo ante un gol recibido o una pérdida?</div>
+      <div class="checks">
+        <label class="check-item"><input type="checkbox" id="dg2a"><div class="check-box"></div><span class="check-label">Se apoyan y alientan mutuamente</span></label>
+        <label class="check-item"><input type="checkbox" id="dg2b"><div class="check-box"></div><span class="check-label">Se generan tensiones o reproches visibles</span></label>
+        <label class="check-item"><input type="checkbox" id="dg2c"><div class="check-box"></div><span class="check-label">El error no parece afectar el clima del equipo</span></label>
+        <label class="check-item"><input type="checkbox" id="dg2d"><div class="check-box"></div><span class="check-label">El rendimiento baja notablemente después de un error</span></label>
+      </div>
+      <div class="sep"></div>
+      <div class="escala">
+        <input type="radio" name="e-dg2" id="e-dg2-1"><label for="e-dg2-1">No se<br>observa</label>
+        <input type="radio" name="e-dg2" id="e-dg2-2"><label for="e-dg2-2">Muy<br>bajo</label>
+        <input type="radio" name="e-dg2" id="e-dg2-3"><label for="e-dg2-3">Regular</label>
+        <input type="radio" name="e-dg2" id="e-dg2-4"><label for="e-dg2-4">Bueno</label>
+        <input type="radio" name="e-dg2" id="e-dg2-5"><label for="e-dg2-5">Muy<br>bueno</label>
+      </div>
+    </div>
+
+    <!-- DG3 -->
+    <div class="ind">
+      <div class="ind-top">
+        <div class="ind-title">Participación equitativa</div>
+        <span class="nivel-badge nb-b">Básico</span>
+      </div>
+      <div class="checks">
+        <label class="check-item"><input type="checkbox" id="dg3a"><div class="check-box"></div><span class="check-label">Todos los jugadores participan activamente</span></label>
+        <label class="check-item"><input type="checkbox" id="dg3b"><div class="check-box"></div><span class="check-label">Hay jugadores que "desaparecen" del juego</span></label>
+        <label class="check-item"><input type="checkbox" id="dg3c"><div class="check-box"></div><span class="check-label">1 o 2 jugadores concentran casi todo el juego</span></label>
+        <label class="check-item"><input type="checkbox" id="dg3d"><div class="check-box"></div><span class="check-label">Los extremos tienen poca participación</span></label>
+        <label class="check-item"><input type="checkbox" id="dg3e"><div class="check-box"></div><span class="check-label">El pivot tiene poca participación</span></label>
+      </div>
+    </div>
+
+    <!-- DG4 -->
+    <div class="ind">
+      <div class="ind-top">
+        <div class="ind-title">Gestión del tiempo muerto</div>
+        <span class="nivel-badge nb-a">Avanzado</span>
+      </div>
+      <div class="checks">
+        <label class="check-item"><input type="checkbox" id="dg4a"><div class="check-box"></div><span class="check-label">El entrenador/capitán da consignas claras</span></label>
+        <label class="check-item"><input type="checkbox" id="dg4b"><div class="check-box"></div><span class="check-label">Los jugadores incorporan los ajustes al volver al juego</span></label>
+        <label class="check-item"><input type="checkbox" id="dg4c"><div class="check-box"></div><span class="check-label">El tiempo muerto no genera cambio visible en el juego</span></label>
+        <label class="check-item"><input type="checkbox" id="dg4d"><div class="check-box"></div><span class="check-label">No se piden tiempos muertos</span></label>
+      </div>
+    </div>
+
+    <!-- DG5 -->
+    <div class="ind">
+      <div class="ind-top">
+        <div class="ind-title">Presión y momentos críticos</div>
+        <span class="nivel-badge nb-a">Avanzado</span>
+      </div>
+      <div class="ind-desc">¿Cómo responde el equipo en los últimos minutos o ante un marcador adverso?</div>
+      <div class="checks">
+        <label class="check-item"><input type="checkbox" id="dg5a"><div class="check-box"></div><span class="check-label">Mantiene el sistema táctico bajo presión</span></label>
+        <label class="check-item"><input type="checkbox" id="dg5b"><div class="check-box"></div><span class="check-label">Se desorganiza tácticamente cuando pierde</span></label>
+        <label class="check-item"><input type="checkbox" id="dg5c"><div class="check-box"></div><span class="check-label">Aumenta el riesgo / lanza más desde lejos</span></label>
+        <label class="check-item"><input type="checkbox" id="dg5d"><div class="check-box"></div><span class="check-label">El clima grupal se deteriora notablemente</span></label>
+      </div>
+      <div class="sep"></div>
+      <div class="escala">
+        <input type="radio" name="e-dg5" id="e-dg5-1"><label for="e-dg5-1">No se<br>observa</label>
+        <input type="radio" name="e-dg5" id="e-dg5-2"><label for="e-dg5-2">Muy<br>bajo</label>
+        <input type="radio" name="e-dg5" id="e-dg5-3"><label for="e-dg5-3">Regular</label>
+        <input type="radio" name="e-dg5" id="e-dg5-4"><label for="e-dg5-4">Bueno</label>
+        <input type="radio" name="e-dg5" id="e-dg5-5"><label for="e-dg5-5">Muy<br>bueno</label>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ SÍNTESIS ============ -->
+<div class="dim" style="border-bottom:none;">
+  <div class="dim-hd" style="background:var(--teal-bg);" onclick="toggleDim(this)">
+    <div class="d-icon">💡</div>
+    <div class="d-info">
+      <div class="d-title" style="color:var(--teal);">Síntesis del Observador</div>
+      <div class="d-sub" style="color:var(--teal);">Reflexión final · Transferencia didáctica</div>
+    </div>
+    <div class="d-arrow">▼</div>
+  </div>
+  <div class="dim-body">
+    <div class="sintesis-wrap">
+
+      <div class="sint-card">
+        <div class="sint-title">¿Cuál fue la mayor fortaleza del equipo?</div>
+        <div class="radio-group">
+          <label class="radio-item"><input type="radio" name="sint1"><div class="radio-dot"></div><span class="radio-label">Técnica individual (pase, lanzamiento)</span></label>
+          <label class="radio-item"><input type="radio" name="sint1"><div class="radio-dot"></div><span class="radio-label">Organización táctica colectiva</span></label>
+          <label class="radio-item"><input type="radio" name="sint1"><div class="radio-dot"></div><span class="radio-label">Cohesión y clima de grupo</span></label>
+          <label class="radio-item"><input type="radio" name="sint1"><div class="radio-dot"></div><span class="radio-label">Toma de decisiones individuales</span></label>
+          <label class="radio-item"><input type="radio" name="sint1"><div class="radio-dot"></div><span class="radio-label">No identifiqué una fortaleza clara</span></label>
+        </div>
+      </div>
+
+      <div class="sint-card">
+        <div class="sint-title">¿Cuál fue el problema más evidente?</div>
+        <div class="radio-group">
+          <label class="radio-item"><input type="radio" name="sint2"><div class="radio-dot"></div><span class="radio-label">Falta de estructura táctica / roles sin definición</span></label>
+          <label class="radio-item"><input type="radio" name="sint2"><div class="radio-dot"></div><span class="radio-label">Poca circulación del balón</span></label>
+          <label class="radio-item"><input type="radio" name="sint2"><div class="radio-dot"></div><span class="radio-label">Conflictos o tensiones en el grupo</span></label>
+          <label class="radio-item"><input type="radio" name="sint2"><div class="radio-dot"></div><span class="radio-label">Baja calidad técnica individual</span></label>
+          <label class="radio-item"><input type="radio" name="sint2"><div class="radio-dot"></div><span class="radio-label">No identifiqué un problema central</span></label>
+        </div>
+      </div>
+
+      <div class="sint-card">
+        <div class="sint-title">Si fueras el docente de ese equipo, ¿qué trabajarías primero?</div>
+        <div class="radio-group">
+          <label class="radio-item"><input type="radio" name="sint3"><div class="radio-dot"></div><span class="radio-label">Técnica de lanzamiento</span></label>
+          <label class="radio-item"><input type="radio" name="sint3"><div class="radio-dot"></div><span class="radio-label">Circulación de balón y rol del pivot</span></label>
+          <label class="radio-item"><input type="radio" name="sint3"><div class="radio-dot"></div><span class="radio-label">Sistema defensivo</span></label>
+          <label class="radio-item"><input type="radio" name="sint3"><div class="radio-dot"></div><span class="radio-label">Comunicación y cohesión de grupo</span></label>
+          <label class="radio-item"><input type="radio" name="sint3"><div class="radio-dot"></div><span class="radio-label">Contraataque y transición</span></label>
+        </div>
+      </div>
+
+      <!-- VACÍOS -->
+      <div class="sint-card">
+        <div class="sint-title">¿Qué indicadores NO pudiste responder? (marcá los que te faltaron)</div>
+        <div class="sint-desc">Estos son tus vacíos de formación — el contenido que necesitás aprender para observar mejor.</div>
+        <div class="vacios-list">
+          <label class="vacio-item"><input type="checkbox" id="v1"><div class="vacio-check"></div><span class="vacio-label">Tipos de lanzamiento (en suspensión, en caída…)</span></label>
+          <label class="vacio-item"><input type="checkbox" id="v2"><div class="vacio-check"></div><span class="vacio-label">Finta y disociación segmentaria</span></label>
+          <label class="vacio-item"><input type="checkbox" id="v3"><div class="vacio-check"></div><span class="vacio-label">Técnica defensiva individual</span></label>
+          <label class="vacio-item"><input type="checkbox" id="v4"><div class="vacio-check"></div><span class="vacio-label">Bloqueo y pantalla del pivot</span></label>
+          <label class="vacio-item"><input type="checkbox" id="v5"><div class="vacio-check"></div><span class="vacio-label">Juego del extremo en ángulo cerrado</span></label>
+          <label class="vacio-item"><input type="checkbox" id="v6"><div class="vacio-check"></div><span class="vacio-label">Sistemas defensivos (6:0, 5:1, 4:2…)</span></label>
+          <label class="vacio-item"><input type="checkbox" id="v7"><div class="vacio-check"></div><span class="vacio-label">Medios tácticos colectivos (cruce, paralela, penetración)</span></label>
+          <label class="vacio-item"><input type="checkbox" id="v8"><div class="vacio-check"></div><span class="vacio-label">Contraataque y oleadas</span></label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- BARRA FIJA -->
+<div class="pdf-section">
+  <button class="btn-pdf" onclick="exportarPDF()">📄 Exportar PDF</button>
+  <button class="btn-reset" onclick="resetForm()">↺ Limpiar</button>
+</div>
+
+<div style="background:#0D3B66;color:rgba(255,255,255,0.6);padding:14px 20px;font-size:9px;letter-spacing:1px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:80px;"><span>IMEF Comunidad · Instituto Modelo de Educación Física</span><span>Medrano 155, Banfield, Buenos Aires · Tel: 4202-0665 · imef.informacion@gmail.com</span></div><script>
+// Toggle dimensiones
+function toggleDim(hd) {
+  const body = hd.nextElementSibling;
+  hd.classList.toggle('open');
+  body.classList.toggle('open');
+}
+
+// Progress bar
+function updateProgress() {
+  const radios = document.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked');
+  const total = document.querySelectorAll('input[type="radio"], input[type="checkbox"]').length;
+  const pct = Math.round((radios.length / total) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+document.querySelectorAll('input').forEach(i => {
+  i.addEventListener('change', updateProgress);
+});
+
+// Abrir todas las dims al exportar
+function exportarPDF() {
+  document.querySelectorAll('.dim-body').forEach(b => b.classList.add('open'));
+  document.querySelectorAll('.dim-hd').forEach(h => h.classList.add('open'));
+  setTimeout(() => window.print(), 300);
+}
+
+// Reset
+function resetForm() {
+  if (!confirm('¿Limpiar todo el formulario?')) return;
+  document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(i => i.checked = false);
+  document.querySelectorAll('input[type="text"], input[type="date"], select').forEach(i => i.value = '');
+  document.getElementById('progressBar').style.width = '0%';
+}
+</script>
+</body>
+</html>
