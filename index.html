@@ -3,19 +3,104 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Handball — IMEF Comunidad</title>
+<title>IMEF Comunidad — Handball & Balonmano</title>
 <style>
-  body { font-family: Arial, sans-serif; background: #F4F4F6; margin: 0; padding: 40px 20px; }
-  h1 { color: #0D3B66; font-size: 22px; margin-bottom: 6px; }
-  p { color: #666; font-size: 13px; margin-bottom: 30px; }
-  a { display: block; background: #0D3B66; color: white; text-decoration: none; padding: 16px 20px; border-radius: 6px; margin-bottom: 12px; font-size: 15px; font-weight: bold; }
-  a span { display: block; font-size: 11px; opacity: 0.7; font-weight: normal; margin-top: 3px; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; background: #F4F4F6; min-height: 100vh; }
+
+  .header {
+    background: #0D3B66;
+    color: white;
+    padding: 24px 28px;
+    border-bottom: 3px solid #00A896;
+  }
+  .brand { font-size: 22px; font-weight: bold; letter-spacing: 1px; margin-bottom: 4px; }
+  .brand span { color: #00A896; }
+  .brand-sub { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.6; }
+
+  .wrap { max-width: 680px; margin: 0 auto; padding: 32px 20px 60px; }
+
+  .section-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #00A896;
+    font-weight: bold;
+    margin-bottom: 12px;
+    margin-top: 28px;
+    padding-left: 4px;
+  }
+
+  a {
+    display: block;
+    background: #0D3B66;
+    color: white;
+    text-decoration: none;
+    padding: 18px 20px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    border-left: 4px solid #00A896;
+    transition: background 0.15s;
+  }
+
+  a span {
+    display: block;
+    font-size: 11px;
+    opacity: 0.65;
+    font-weight: normal;
+    margin-top: 4px;
+    letter-spacing: 0.3px;
+  }
+
   a:hover { background: #00A896; }
+
+  .footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid #d0d4da;
+    font-size: 10px;
+    color: #999;
+    letter-spacing: 1px;
+    text-align: center;
+    line-height: 1.8;
+  }
 </style>
 </head>
 <body>
-  <h1>IMEF Comunidad</h1>
-  <p>Didáctica de las Prácticas Deportivas · Handball · 4to año Profesorado</p>
-  <a href="instrumento_observacion_handball.html">Instrumento de Observación<span>Para completar en clase y en partidos autónomos</span></a>
+
+<div class="header">
+  <div class="brand">IMEF <span>Comunidad</span></div>
+  <div class="brand-sub">Instituto Modelo de Educación Física · Recursos Didácticos Digitales</div>
+</div>
+
+<div class="wrap">
+
+  <div class="section-label">Handball · Didáctica 4to año Profesorado</div>
+
+  <a href="instrumento_observacion_handball.html">
+    Instrumento de Observación — Handball
+    <span>Para completar en clase y en partidos autónomos · Exportable a PDF</span>
+  </a>
+
+  <div class="section-label">Balonmano · Herramientas de Mesa de Control y Arbitraje</div>
+
+  <a href="balonmano-cronometro-mesa/">
+    Mesa de Control — Cronómetro
+    <span>Cronómetro descendente · Exclusiones de 2 min · Hasta 7 simultáneas · Para tablet o proyector</span>
+  </a>
+
+  <a href="balonmano-planilla-online/">
+    Planilla Digital — Balonmano
+    <span>Registro completo de partido · Jugadores · Marcador · Sanciones · Guardar y exportar PDF</span>
+  </a>
+
+  <div class="footer">
+    IMEF Comunidad · Instituto Modelo de Educación Física<br>
+    Medrano 155, Banfield, Buenos Aires · Tel: 4202-0665 · imef.informacion@gmail.com
+  </div>
+
+</div>
 </body>
 </html>
